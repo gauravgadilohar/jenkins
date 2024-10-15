@@ -6,7 +6,7 @@ pipeline {
         stage (pull){
             steps{
                 echo "we are pulling from github"
-                git "https://github.com/gauravgadilohar/jenkins.git"
+                git "https://github.com/gauravgadilohar/studentapp-ui"
             }   
         }
         stage (build){
@@ -15,8 +15,8 @@ pipeline {
                 sudo apt update
                 sudo apt install maven -y
                 sudo apt install unzip -y
-                sudo wget https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.96/bin/apache-tomcat-8.5.96.zip
-                sudo unzip apache-tomcat-8.5.96zip
+                sudo wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.96/bin/apache-tomcat-9.0.96.zip
+                sudo unzip apache-tomcat-9.0.96.zip
                 sudo mvn clean package
                 
                 '''
@@ -26,8 +26,8 @@ pipeline {
         stage (configure){
             steps{
                 sh '''
-                sudo mv target/*.war  apache-tomcat-8.5.96/webapps/student.war
-                sudo bash apache-tomcat-8.5.96/bin/catalina.sh start
+                sudo mv target/studentapp-2.2-SNAPSHOT.war apache-tomcat-9.0.96/webapps/student.war
+                sudo bash apache-tomcat-9.0.96/bin/catalina.sh start
                 '''
                 echo "we are configuring"
             }   
