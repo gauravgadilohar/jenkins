@@ -1,42 +1,36 @@
 pipeline {
-      agent{
-        label 'new'    //mention the label of your webserver node provided in jenkins
-    }
-    stages {
-          stage('Pull') {
-            steps {
-                 echo "we are pulling from github"
-                 git "https://github.com/gauravgadilohar/studentapp-ui"
-            }
+    agent{
+        label 'new-node'
+    } 
+    stages{
+        stage (pull){
+            steps{
+                echo "we are pulling from github"
+                git "https://github.com/gauravgadilohar/jenkins.git"
+            }   
         }
-        stage('Build') {
-            steps {
+        stage (build){
+            steps{
                 sh '''
-                sudo mvn clean package 
-                sudo apt update 
+                sudo apt update
+                sudo apt install maven -y
                 sudo apt install unzip -y
-                sudo curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.95/bin/apache-tomcat-9.0.95.zip
-                sudo unzip apache-tomcat-9.0.95.zip 
-                echo we are building source code'''
-            }
-        }
-        stage('Test') {
-            steps {
-                sh '''echo "we are testing"
+                sudo wget https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.96/bin/apache-tomcat-8.5.96.zip
+                sudo unzip apache-tomcat-8.5.96zip
+                sudo mvn clean package
+                
                 '''
-            }
+                echo "we are building"
+            }   
         }
-        stage('Deploy') {
-            steps {
+        stage (configure){
+            steps{
                 sh '''
-                 sudo mv target/*.war  apache-tomcat-9.0.95/webapps/student.war
-                 sudo bash apache-tomcat-9.0.95/bin/catalina.sh start
-                 echo "we are deploying"
+                sudo mv target/*.war  apache-tomcat-8.5.96/webapps/student.war
+                sudo bash apache-tomcat-8.5.96/bin/catalina.sh start
                 '''
-            }
+                echo "we are configuring"
+            }   
         }
     }
 }
-
-
-//default location of your target directory /home/ubuntu/workspace
